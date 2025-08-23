@@ -8,18 +8,16 @@
 import SwiftUI
 
 struct ChattingView: View {
-    @ObservedObject var viewModel: ChatViewModel
+    @StateObject var viewModel = ChatViewModel()
     
-    let contents: String
+    var contents: String
     
     var body: some View {
         ZStack {
             Color.prime40
                 .ignoresSafeArea(edges: .bottom)
             VStack(spacing: 16) {
-                CustomNavigationBar(
-                    title: "오늘의 알림장"
-                )
+                CustomNavigationBar(title: "오늘의 알림장")
                 
                 Group {
                     ScrollView {
@@ -56,6 +54,7 @@ struct ChattingView: View {
             }
         }
         .ignoresSafeArea(edges: .top)
+        .navigationBarHidden(true)
     }
     
     private var inputView: some View {
@@ -86,7 +85,7 @@ struct ChattingView: View {
 }
 
 #Preview {
-    ChattingView(viewModel: ChatViewModel(), contents: """
+    ChattingView(contents: """
                  안녕하세요 민규 어머니!️
                  
                  오늘 민규는 블록 놀이 시간에 먼저 작은 블록을 하나씩 쌓아 올리며 즐겁게 활동했어요. 차곡차곡 올리던 탑이 점점 커지자 손으로 살짝 받쳐주며 무너지지 않도록 조심하는 모습이 참 귀여웠습니다. 옆에 있던 친구가 블록을 들고 오자 “여기 올려!”라고 말하며 자리를 내주는 배려심도 보여 주었답니다. 친구와 함께 높은 탑을 완성했을 때는 두 손을 들고 “와~ 높다!”라고 환하게 웃는 모습이 정말 인상적이었어요.^^
