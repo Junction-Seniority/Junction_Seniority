@@ -173,7 +173,7 @@ struct ReportEditorView: View {
                                     Text(event.supplies)
                                         .body03_14Light()
                                 }
-                             }
+                            }
                             .padding(.horizontal, 12)
                             .padding(.vertical, 8)
                             .frame(maxWidth: .infinity, alignment: .leading)
@@ -198,7 +198,7 @@ struct ReportEditorView: View {
                         
                             // 마무리 인사말 Category
                             VStack(alignment: .leading, spacing: 8) {
-                                Text("마무리 인사말")
+                                Text("마무리 인삿말")
                                     .body01_16Bold()
                             
                                 HStack(spacing: 8) {
@@ -235,22 +235,28 @@ struct ReportEditorView: View {
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .background(.white)
                             .cornerRadius(12)
-                        
+                            
+                            Text("✦ 알림장 끝에 각 원아별 특이사항이 기록될 예정이에요")
+                                .body01_16Bold()
+                                .foregroundColor(.prime100)
+                                .frame(maxWidth: .infinity)
+                                .multilineTextAlignment(.center)
+                                
                             Button(action: {
                                 // 알림장 생성 로직
                             }) {
                                 HStack {
                                     Spacer()
                                     Text("알림장 생성하기")
-                                        .font(.system(size: 18, weight: .bold))
+                                        .subHead01_20Bold()
                                         .foregroundColor(.white)
                                     Spacer()
                                 }
-                                .padding(.vertical, 18)
-                                .background(Color(red: 0.4, green: 0.7, blue: 1.0))
+                                .padding(.vertical, 12)
+                                .background(.prime100)
                                 .cornerRadius(12)
                             }
-                            .padding(.bottom, 30)
+                            .padding(.bottom, 16)
                         }
                         .padding(.horizontal, 20)
                     }
