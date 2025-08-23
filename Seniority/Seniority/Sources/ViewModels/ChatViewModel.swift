@@ -47,6 +47,33 @@ class ChatViewModel: ObservableObject {
         }
     }
     
+    // 알림장 어투 적용 system prompt 넣은 solar pro2 chat
+    func sendMessageWithTuneAdjustSP() {
+        guard !currentMessage.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            errorMessage = UIError.emptyMessage.localizedDescription
+            return
+        }
+        
+        guard !isLoading else {
+            errorMessage = UIError.loadingState.localizedDescription
+            return
+        }
+        
+        let messageText = Constants.SystemPrompt.messageExtract + " " + currentMessage
+
+        let uiMessage = currentMessage
+        currentMessage = ""
+        errorMessage = ""
+        
+        // Add user message to conversation
+        let userMessage = ChatMessage(role: .user, content: messageText, displayContent: uiMessage)
+        conversation.addMessage(userMessage)
+        
+        Task {
+            await sendMessageAsync(messageText)
+        }
+    }
+    
     // 메시지 추출 system prompt 넣은 solar pro2 chat
     func sendMessageWithMessageExtractionSP() {
         guard !currentMessage.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {

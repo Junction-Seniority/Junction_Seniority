@@ -8,5 +8,10 @@
 		<string>Pretendard-Light.otf</string>
 		<string>Pretendard-Regular.otf</string>
 	</array>
+	<key>UILaunchScreen</key>
+	<dict>
+		<key>UIImageName</key>
+		<string>LaunchImage</string>
+	</dict>
 </dict>
 </plist>
