@@ -39,7 +39,7 @@ class ChatViewModel: ObservableObject {
         errorMessage = ""
         
         // Add user message to conversation
-        let userMessage = ChatMessage(role: .user, content: messageText)
+        let userMessage = ChatMessage(role: .user, content: messageText, displayContent: messageText)
         conversation.addMessage(userMessage)
         
         Task {
@@ -60,11 +60,13 @@ class ChatViewModel: ObservableObject {
         }
         
         let messageText = Constants.SystemPrompt.messageExtract + " " + currentMessage
+
+        let uiMessage = currentMessage
         currentMessage = ""
         errorMessage = ""
         
         // Add user message to conversation
-        let userMessage = ChatMessage(role: .user, content: messageText)
+        let userMessage = ChatMessage(role: .user, content: messageText, displayContent: uiMessage)
         conversation.addMessage(userMessage)
         
         Task {
@@ -79,7 +81,7 @@ class ChatViewModel: ObservableObject {
             let response = try await chatService.sendMessage(message, model: selectedModel)
             
             // Add assistant response to conversation
-            let assistantMessage = ChatMessage(role: .assistant, content: response.content)
+            let assistantMessage = ChatMessage(role: .assistant, content: response.content, displayContent: response.content)
             if let data = assistantMessage.content.data(using: .utf8) {
                 do {
                     let decoded = try JSONDecoder().decode(SpecialNotesResponse.self, from: data)

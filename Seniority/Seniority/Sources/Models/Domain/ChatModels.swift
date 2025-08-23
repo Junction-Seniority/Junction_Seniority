@@ -12,12 +12,14 @@ struct ChatMessage {
     let id: UUID
     let role: MessageRole
     let content: String
+    let displayContent: String
     let timestamp: Date
     
-    init(role: MessageRole, content: String) {
+    init(role: MessageRole, content: String, displayContent: String) {
         self.id = UUID()
         self.role = role
         self.content = content
+        self.displayContent = displayContent
         self.timestamp = Date()
     }
 }
