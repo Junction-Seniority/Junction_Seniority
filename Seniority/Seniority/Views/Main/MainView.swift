@@ -7,43 +7,13 @@
 
 import SwiftUI
 
-struct ChildDummy: Identifiable {
-    let id = UUID()
-    var name: String
-    var birth: Date
-    var schedules: [String]
-    var notes: [String]
-}
-
 /// 선생님 메인 뷰
 struct MainView: View {
     @EnvironmentObject private var coordinator: AppCoordinator
-    
-    @State private var children: [ChildDummy] = [
-        ChildDummy(
-            name: "정종문",
-            birth: Calendar.current.date(from: DateComponents(year: 2023, month: 1, day: 3))!,
-            schedules: [],
-            notes: []
-        ),
-        ChildDummy(
-            name: "김지혜",
-            birth: Calendar.current.date(from: DateComponents(year: 2023, month: 3, day: 14))!,
-            schedules: [],
-            notes: []
-        ),
-        ChildDummy(
-            name: "임서연",
-            birth: Calendar.current.date(from: DateComponents(year: 2023, month: 1, day: 24))!,
-            schedules: ["등원 후 목감기 약 복약"],
-            notes: ["오늘 놀이터에서 뛰어다니다가 넘어지는 사건이 있었습니다", "간식을 반을 남겼습니다 요플레를 싫어하는 것 같아요"]
-        ),
-        
-    ]
+    @State private var children = DummyChild.children
     
     var body: some View {
         VStack(alignment: .center, spacing: 20) {
-            
             HStack(alignment: .top) {
                 // Space Between
                 VStack(alignment: .leading, spacing: 6) {
@@ -69,7 +39,6 @@ struct MainView: View {
                         Image(.settings)
                     }
                 }
-                
             }
             .padding(.horizontal, 0)
             .padding(.vertical, 32)
@@ -112,6 +81,7 @@ struct MainView: View {
 
 struct ChildCardView: View {
     @AppStorage("jjm_notes") private var jjmNotesJSON: String = "[]" // MARK: - 종문 어린이 특이사항만 AppStorage에 저장
+
     @Binding var child: ChildDummy
     
     @State private var isAddingNote: Bool = false
@@ -153,7 +123,6 @@ struct ChildCardView: View {
                             .frame(height: 24, alignment: .center)
                             .background(Color(red: 0.59, green: 0.73, blue: 0.88))
                             .cornerRadius(999999)
-                            
                         }
                     }
                     .padding(0)
@@ -186,7 +155,7 @@ struct ChildCardView: View {
                     }
                     
                     if isAddingNote {
-                        HStack{
+                        HStack {
                             Text("✦")
                                 .foregroundColor(.prime100)
                             
@@ -200,8 +169,8 @@ struct ChildCardView: View {
                                 .onSubmit { commitNote() }
                                 .onChange(of: draftNote) { _, newValue in
                                     if newValue.last == "\n" {
-                                        draftNote.removeLast()   // 개행 제거
-                                        commitNote()             // 곧장 등록
+                                        draftNote.removeLast() // 개행 제거
+                                        commitNote() // 곧장 등록
                                     }
                                 }
                         }
@@ -211,7 +180,9 @@ struct ChildCardView: View {
                 .padding(.vertical, 4)
                 .frame(maxWidth: .infinity, alignment: .topLeading)
             }
+
             // MARK: - 디버깅용
+
             Button("저장 초기화") { clearJJMNotes() }
         }
         .padding(10)
@@ -240,6 +211,7 @@ struct ChildCardView: View {
     }
     
     // MARK: - Actions
+
     private func commitNote() {
         let trimmed = draftNote.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { cancelNote(); return }
@@ -267,8 +239,8 @@ struct ChildCardView: View {
         return "생후 \(comps.month ?? 0)개월"
     }
     
-    
     // MARK: - JSON Helpers
+
     private func encodeNotes(_ notes: [String]) -> String {
         (try? String(data: JSONEncoder().encode(notes), encoding: .utf8)) ?? "[]"
     }
@@ -280,7 +252,7 @@ struct ChildCardView: View {
     
     private func clearJJMNotes() {
         jjmNotesJSON = "[]"
-        if isJJM { child.notes = [] }   // 화면도 함께 초기화
+        if isJJM { child.notes = [] } // 화면도 함께 초기화
     }
 }
 
