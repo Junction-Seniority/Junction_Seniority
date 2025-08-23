@@ -13,9 +13,7 @@ struct ReportEditorView: View {
     @State private var additionalNotes = ""
     
     var body: some View {
-        ZStack(alignment: .top) {
-            Color.prime40.ignoresSafeArea()
-            
+        VStack(spacing: 32) {
             CustomNavigationBar(title: "알림장 작성")
             
             ScrollView {
@@ -190,6 +188,18 @@ struct ReportEditorView: View {
                     .background(.white)
                     .cornerRadius(12)
                     
+                    HStack(alignment: .center) {
+                        Image(.ajttsLogo)
+                            .resizable()
+                            .frame(width: 18, height: 18)
+                        // Body/Body01-16Bold
+                        Text("알림장 끝에 각 원아별 특이사항이 기록될 예정이에요")
+                            .body01_16Bold()
+                            .foregroundColor(.prime100)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 16)
+                    
                     // CTA
                     Button {
                         // 알림장 생성 로직
@@ -210,10 +220,9 @@ struct ReportEditorView: View {
                 .padding(.horizontal, 20)
                 .padding(.top, 12) // 바 아래 여백
             }
-            .padding(.top, 120)
-            .toolbar(.hidden, for: .navigationBar)
         }
         .navigationBarHidden(true)
+        .background(.prime40)
     }
 }
 

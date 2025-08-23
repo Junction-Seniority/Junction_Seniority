@@ -72,11 +72,15 @@ struct FileUploadView: View {
                     .cornerRadius(12)
                 }
                 
-                // Caption/Caption01_12Light
-                Text("나중에 할게요")
-                    .caption01_12Light()
-                    .underline(true, pattern: .solid)
-                    .foregroundColor(.black70)
+                Button {
+                    coordinator.popToRoot()
+                } label: {
+                    // Caption/Caption01_12Light
+                    Text("나중에 할게요")
+                        .caption01_12Light()
+                        .underline(true, pattern: .solid)
+                        .foregroundColor(.black70)
+                }
             }
             .padding(.vertical, 16)
             
