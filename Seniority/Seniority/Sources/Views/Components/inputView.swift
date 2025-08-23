@@ -19,7 +19,7 @@ struct InputView: View {
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .lineLimit(1 ... 4)
 
-                Button(action: viewModel.sendMessage) {
+                Button(action: viewModel.sendMessageWithMessageExtractionSP) {
                     Image(systemName: "paperplane.fill")
                         .foregroundColor(viewModel.canSendMessage ? .blue : .gray)
                         .font(.title2)

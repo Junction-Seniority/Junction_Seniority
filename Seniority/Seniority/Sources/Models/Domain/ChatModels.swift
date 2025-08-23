@@ -76,6 +76,10 @@ struct ChatResponse {
     }
 }
 
+struct SpecialNotesResponse: Codable {
+    let special_notes: [String]
+}
+
 struct TokenUsage {
     let promptTokens: Int
     let completionTokens: Int

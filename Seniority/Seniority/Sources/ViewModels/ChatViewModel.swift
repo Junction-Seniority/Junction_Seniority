@@ -22,6 +22,7 @@ class ChatViewModel: ObservableObject {
         self.chatService = chatService
     }
     
+    
     func sendMessage() {
         guard !currentMessage.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
             errorMessage = UIError.emptyMessage.localizedDescription
@@ -46,6 +47,31 @@ class ChatViewModel: ObservableObject {
         }
     }
     
+    // 메시지 추출 system prompt 넣은 solar pro2 chat
+    func sendMessageWithMessageExtractionSP() {
+        guard !currentMessage.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            errorMessage = UIError.emptyMessage.localizedDescription
+            return
+        }
+        
+        guard !isLoading else {
+            errorMessage = UIError.loadingState.localizedDescription
+            return
+        }
+        
+        let messageText = Constants.SystemPrompt.messageExtract + " " + currentMessage
+        currentMessage = ""
+        errorMessage = ""
+        
+        // Add user message to conversation
+        let userMessage = ChatMessage(role: .user, content: messageText)
+        conversation.addMessage(userMessage)
+        
+        Task {
+            await sendMessageAsync(messageText)
+        }
+    }
+    
     private func sendMessageAsync(_ message: String) async {
         isLoading = true
         
@@ -54,7 +80,18 @@ class ChatViewModel: ObservableObject {
             
             // Add assistant response to conversation
             let assistantMessage = ChatMessage(role: .assistant, content: response.content)
-            conversation.addMessage(assistantMessage)
+            if let data = assistantMessage.content.data(using: .utf8) {
+                do {
+                    let decoded = try JSONDecoder().decode(SpecialNotesResponse.self, from: data)
+                    let notes = decoded.special_notes
+                    
+                    @AppStorage("specialNotes") var specialNotes: [String] = notes
+                    print(specialNotes)
+                } catch {
+                    print("디코딩 실패:", error)
+                }
+            }
+//            conversation.addMessage(assistantMessage)
             
         } catch let error as APIError {
             errorMessage = error.localizedDescription
