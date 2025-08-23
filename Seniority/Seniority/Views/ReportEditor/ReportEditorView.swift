@@ -13,10 +13,9 @@ struct ReportEditorView: View {
     @State private var additionalNotes = ""
     
     var body: some View {
-        ZStack(alignment: .top) {
-            Color.prime40.ignoresSafeArea()
-            
+        VStack(spacing: 32) {
             CustomNavigationBar(title: "알림장 작성")
+                .frame(maxHeight: 44)
             
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 16) {
@@ -210,10 +209,9 @@ struct ReportEditorView: View {
                 .padding(.horizontal, 20)
                 .padding(.top, 12) // 바 아래 여백
             }
-            .padding(.top, 120)
-            .toolbar(.hidden, for: .navigationBar)
         }
         .navigationBarHidden(true)
+        .background(.prime40)
     }
 }
 

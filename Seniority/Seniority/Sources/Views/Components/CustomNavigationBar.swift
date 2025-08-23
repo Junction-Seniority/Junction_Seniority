@@ -24,7 +24,7 @@ struct CustomNavigationBar: View {
     }
 
     var body: some View {
-        ZStack {
+        ZStack(alignment: .top) {
             HStack {
                 // 항상 뒤로가기 버튼 노출
                 Button {
@@ -71,7 +71,7 @@ extension UINavigationController: @retroactive UIGestureRecognizerDelegate {
 }
 
 #Preview {
-  ZStack {
+ZStack(alignment: .top) {
     Color.black
     CustomNavigationBar(
       title: "오늘의 알림장"
