@@ -169,14 +169,11 @@ struct ReportEditorView: View {
                                             .foregroundStyle(.black70)
                                     }
                                 }
-                            
-                                HStack {
-                                    ForEach(report.event?.supplies ?? [], id: \.self) { item in
-                                        Text(item)
-                                            .body03_14Light()
-                                    }
+                                if let event = report.event {
+                                    Text(event.supplies)
+                                        .body03_14Light()
                                 }
-                            }
+                             }
                             .padding(.horizontal, 12)
                             .padding(.vertical, 8)
                             .frame(maxWidth: .infinity, alignment: .leading)
