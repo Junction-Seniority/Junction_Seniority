@@ -11,7 +11,7 @@ import SwiftUI
 struct SeniorityApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            RootView()
         }
     }
 }
