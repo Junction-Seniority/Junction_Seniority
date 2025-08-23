@@ -12,63 +12,86 @@ struct MainView: View {
     @EnvironmentObject private var coordinator: AppCoordinator
     @State private var children = DummyChild.children
     
+    @State private var showAlert: Bool = false
+    
     var body: some View {
-        VStack(alignment: .center, spacing: 20) {
-            HStack(alignment: .top) {
-                // Space Between
-                VStack(alignment: .leading, spacing: 6) {
-                    Text("지혜 어린이집")
-                        .head01_24Bold()
-                        .foregroundColor(.primeDark)
-                    
-                    Text("현주반 (만 3세) 총 4명")
-                        .body02_16Regular()
-                        .foregroundColor(.black70)
+
+        ZStack {
+            VStack(alignment: .center, spacing: 20) {
+
+                HStack(alignment: .top) {
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("지혜 어린이집")
+                            .head01_24Bold()
+                            .foregroundColor(.primeDark)
+                        Text("현주반 (만 3세) 총 4명")
+                            .body02_16Regular()
+                            .foregroundColor(.black70)
+                    }
+
+                    Spacer()
+
+                    HStack {
+                        Button("파일 업로드 뷰") {
+                            coordinator.push(.fileUpload)
+                        }
+                        Button {
+                            coordinator.push(.report)
+                        } label: {
+                            Image(.settings)
+                        }
+                    }
                 }
-                
+
+                .padding(.vertical, 32)
+
+                Text(todayString)
+                    .body03_14Light()
+
+                VStack {
+                    ForEach($children) { $child in
+                        ChildCardView(child: $child)
+                    }
+                }
+
                 Spacer()
-                
-                HStack {
-                    Button("파일 업로드 뷰") {
-                        coordinator.push(.fileUpload)
+
+                Button {
+                     coordinator.push(.reportEdit)
+                } label: {
+                    HStack(spacing: 10) {
+                        Image(.union).foregroundColor(.white)
                     }
-                    
-                    Button {
-                        coordinator.push(.report)
-                    } label: {
-                        Image(.settings)
-                    }
+                    .padding(15)
+                    .background(.prime100)
+                    .cornerRadius(9999)
                 }
             }
-            .padding(.horizontal, 0)
-            .padding(.vertical, 32)
-            
-            Text(todayString)
-                .body03_14Light()
-            
-            VStack {
-                ForEach($children) { $child in
-                    ChildCardView(child: $child)
-                }
-            }
-            
-            Spacer()
-            
-            Button {
-                coordinator.push(.reportEdit)
-            } label: {
-                HStack(alignment: .center, spacing: 10) {
-                    Image(.union)
-                        .foregroundColor(.white)
-                }
-                .padding(15)
-                .background(.prime100)
-                .cornerRadius(9999)
+            .padding(.horizontal, 20)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(.prime40)
+            .ignoresSafeArea(edges: .bottom)
+
+            // ===== 오버레이 모달 =====
+            if showAlert {
+                // 딤 영역
+                Color.black.opacity(0.35)
+                    .ignoresSafeArea()
+                    .transition(.opacity)
+                    .onTapGesture {                         // 배경 탭으로 닫기
+                        withAnimation(.easeOut(duration: 0.2)) { showAlert = false }
+                    }
+                    .zIndex(1)
+
+                // 모달 카드
+                AlertModal(onConfirm: {
+                    showAlert = false
+                })
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                    .zIndex(2)
             }
         }
-        .padding(.horizontal, 20)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(.prime40)
+        .animation(.easeInOut(duration: 0.22), value: showAlert) // 상태 애니메이션
     }
     
     private var todayString: String {
@@ -274,6 +297,48 @@ struct InfoTagView: View {
                 .inset(by: 0.5)
                 .stroke(Color(red: 0.68, green: 0.78, blue: 0.9), lineWidth: 1)
         )
+    }
+}
+
+struct AlertModal: View {
+    var onConfirm: (() -> Void)
+    
+    var body: some View {
+        VStack(alignment: .center, spacing: 16) {
+            VStack(spacing: 4) {
+                Text("✦")
+                    .body03_14Light()
+                    .foregroundColor(.prime100)
+                
+                Text("오늘의 알잘딸깍쌤 완료")
+                    .head01_24Bold()
+                    .foregroundColor(.prime100)
+                
+                Text("선생님의 따뜻한 마음이 알림장에 담겼습니다")
+                    .body03_14Light()
+                    .foregroundColor(.black70)
+            }
+            
+            Button {
+                onConfirm()
+            } label: {
+                HStack(alignment: .center, spacing: 10) {
+                    Text("확인")
+                        .body01_16Bold()
+                        .foregroundColor(.white)
+                }
+            }
+            .padding(.horizontal, 25)
+            .padding(.vertical, 8)
+            .frame(maxWidth: .infinity, minHeight: 40, maxHeight: 40, alignment: .center)
+            .background(Color(red: 0.38, green: 0.6, blue: 0.85))
+
+            .cornerRadius(12)
+        }
+        .padding(24)
+        .frame(width: 330, alignment: .top)
+        .background(.white)
+        .cornerRadius(12)
     }
 }
 

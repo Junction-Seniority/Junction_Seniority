@@ -18,7 +18,7 @@ struct RootView: View {
                     case .splash: SplashView()
                     case .main: MainView()
                     case .fileUpload: FileUploadView()
-                    case .report: ReportView()
+                    case .report: ChattingView()
                     case .reportEdit: ReportEditorView()
                     }
                 }
