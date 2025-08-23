@@ -41,7 +41,7 @@ enum ClosingGreetingStyle: String, CaseIterable {
 struct PlannedEvent {
     var title: String
     var date: String
-    var supplies: [String]
+    var supplies: String?
 }
 
 struct MealInfo {
