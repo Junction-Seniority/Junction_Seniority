@@ -15,7 +15,6 @@ struct ReportEditorView: View {
     var body: some View {
         VStack(spacing: 32) {
             CustomNavigationBar(title: "알림장 작성")
-                .frame(maxHeight: 44)
             
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 16) {
@@ -188,6 +187,18 @@ struct ReportEditorView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .background(.white)
                     .cornerRadius(12)
+                    
+                    HStack(alignment: .center) {
+                        Image(.ajttsLogo)
+                            .resizable()
+                            .frame(width: 18, height: 18)
+                        // Body/Body01-16Bold
+                        Text("알림장 끝에 각 원아별 특이사항이 기록될 예정이에요")
+                            .body01_16Bold()
+                            .foregroundColor(.prime100)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 16)
                     
                     // CTA
                     Button {
