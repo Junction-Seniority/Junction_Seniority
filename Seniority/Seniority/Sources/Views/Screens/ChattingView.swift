@@ -26,6 +26,14 @@ struct ChattingView: View {
                         Text("2025년 8월 24일 일요일")
                             .body03_14Light()
                         
+                        if viewModel.conversation.messages.isEmpty {
+                            EmptyView()
+                        } else {
+                            ForEach(viewModel.conversation.messages, id: \.id) { message in
+                                MessageCellView(message: message)
+                            }
+                        }
+                        
                         VStack(alignment: .leading, spacing: 2) {
                             Text(contents)
                                 .body02_16Regular()
@@ -35,11 +43,12 @@ struct ChattingView: View {
                                         .fill(Color.white)
                                 }
                             
-                            Text("오후 5:00")
+                            Text(Date().timeKorean)
                                 .foregroundStyle(Color.black70)
                                 .body03_14Light()
                         }
                     }
+                    .scrollIndicators(.hidden)
                     
                     inputView
                 }
