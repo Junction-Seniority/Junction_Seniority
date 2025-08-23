@@ -9,9 +9,11 @@ import SwiftUI
 
 /// 선생님 알림장 작성 뷰
 struct ReportEditorView: View {
+    @EnvironmentObject private var coordinator: AppCoordinator
     @State private var report = DummyReportEdit
     
     @State private var additionalNotes = ""
+    @State private var isAddingSupplies = false
     
     var body: some View {
         NavigationView {
@@ -28,7 +30,7 @@ struct ReportEditorView: View {
                                     Text("받는사람")
                                         .font(.system(size: 16, weight: .medium))
                                     Spacer()
-                                    Text("현주만 전체")
+                                    Text("해바라기반 전체")
                                         .font(.system(size: 16))
                                         .foregroundColor(.gray)
                                 }
@@ -151,27 +153,59 @@ struct ReportEditorView: View {
                                 Text(report.event?.title ?? "")
                                     .body03_14Light()
                             
-                                HStack {
-                                    Text("준비물")
-                                        .body02_16Regular()
-                                    Spacer()
-                                    Button(action: {
-                                        print("HI")
-                                    }) {
-                                        Text("추가하기")
-                                            .body03_14Light()
-                                            .padding(.horizontal, 8.5)
-                                            .padding(.vertical, 1.5)
-                                            .background(
-                                                Capsule()
-                                                    .fill(Color.prime90)
-                                            )
-                                            .foregroundStyle(.black70)
+                                if let event = report.event, let supplies = event.supplies, !supplies.isEmpty {
+                                    // 이미 준비물이 있으면 바로 텍스트 필드를 표시
+                                    VStack(alignment: .leading, spacing: 8) {
+                                        Text("준비물")
+                                            .body02_16Regular()
+                                        
+                                        TextField("필요한 준비물이 있다면 작성해주세요", text: Binding<String>(
+                                            get: { report.event?.supplies ?? "" },
+                                            set: { newValue in
+                                                if report.event != nil {
+                                                    report.event?.supplies = newValue.isEmpty ? nil : newValue
+                                                }
+                                            }
+                                        ), axis: .vertical)
+                                            .font(.system(size: 14))
+                                            .cornerRadius(8)
+                                            .lineLimit(2 ... 4)
                                     }
-                                }
-                                if let event = report.event {
-                                    Text(event.supplies)
-                                        .body03_14Light()
+                                } else {
+                                    // 준비물이 없으면 추가하기 버튼과 텍스트 필드를 조건부로 표시
+                                    HStack {
+                                        Text("준비물")
+                                            .body02_16Regular()
+                                        Spacer()
+                                        Button(action: {
+                                            isAddingSupplies = true
+                                        }) {
+                                            Text("추가하기")
+                                                .body03_14Light()
+                                                .padding(.horizontal, 8.5)
+                                                .padding(.vertical, 1.5)
+                                                .background(
+                                                    Capsule()
+                                                        .fill(Color.prime90)
+                                                )
+                                                .foregroundStyle(.black70)
+                                        }
+                                        .opacity(isAddingSupplies ? 0 : 1)
+                                    }
+                                    
+                                    if isAddingSupplies {
+                                        TextField("필요한 준비물이 있다면 작성해주세요", text: Binding<String>(
+                                            get: { report.event?.supplies ?? "" },
+                                            set: { newValue in
+                                                if report.event != nil {
+                                                    report.event?.supplies = newValue.isEmpty ? nil : newValue
+                                                }
+                                            }
+                                        ), axis: .vertical)
+                                            .font(.system(size: 14))
+                                            .cornerRadius(8)
+                                            .lineLimit(2 ... 4)
+                                    }
                                 }
                             }
                             .padding(.horizontal, 12)
@@ -242,9 +276,7 @@ struct ReportEditorView: View {
                                 .frame(maxWidth: .infinity)
                                 .multilineTextAlignment(.center)
                                 
-                            Button(action: {
-                                // 알림장 생성 로직
-                            }) {
+                            Button(action: {}) {
                                 HStack {
                                     Spacer()
                                     Text("알림장 생성하기")
