@@ -25,6 +25,12 @@ struct MainTabView: View {
                     Text("알림장")
                 }
                 .tag(1)
+            TestPage()
+                .tabItem {
+                    Image(systemName: "flask")
+                    Text("알림테스트")
+                }
+                .tag(2)
         }
         .accentColor(.blue)
     }
