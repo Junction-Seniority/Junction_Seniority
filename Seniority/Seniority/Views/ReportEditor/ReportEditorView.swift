@@ -252,13 +252,20 @@ struct ReportEditorView: View {
                 }
                 .padding(.horizontal, 20)
             }
-            .navigationTitle("알림장 작성")
-            .navigationBarTitleDisplayMode(.inline)
             .background(Color.prime40)
         }
     }
 }
 
 #Preview {
-    ReportEditorView()
+    ZStack {
+        Color.prime40
+        VStack {
+            CustomNavigationBar(
+                title: "알림장 작성"
+            )
+            ReportEditorView()
+        }
+    }
+    .ignoresSafeArea()
 }
