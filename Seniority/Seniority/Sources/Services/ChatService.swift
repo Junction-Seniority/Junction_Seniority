@@ -25,8 +25,12 @@ class ChatService: ChatServiceProtocol {
         try validateMessage(message)
         
         let requestDTO = mapper.toRequestDTO(message: message, model: model)
+        
         let responseDTO = try await apiClient.sendChatRequest(requestDTO)
-        return mapper.toDomainModel(from: responseDTO)
+
+        let domainResponse = mapper.toDomainModel(from: responseDTO)
+
+        return domainResponse
     }
     
     func validateMessage(_ message: String) throws {
@@ -41,6 +45,7 @@ class ChatService: ChatServiceProtocol {
 }
 
 // MARK: - Chat Mapper
+
 protocol ChatMapperProtocol {
     func toRequestDTO(message: String, model: ModelType) -> ChatRequestDTO
     func toDomainModel(from dto: ChatResponseDTO) -> ChatResponse

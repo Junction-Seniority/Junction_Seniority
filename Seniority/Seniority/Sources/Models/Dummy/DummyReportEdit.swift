@@ -16,7 +16,7 @@ let DummyReportEdit = SimpleDailyReport(
     event: PlannedEvent(
         title: "점프해서 과자 먹기 대회 예정",
         date: "8.25(월)",
-        supplies: ["단단한 운동화", "수건"]
+        supplies: "단단한 운동화와 땀을 닦을 수 있는 수건"
     ),
     closingGreetingStyle: .mindfulness
 )
