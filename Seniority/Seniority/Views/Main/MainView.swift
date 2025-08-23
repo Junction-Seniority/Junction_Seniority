@@ -19,6 +19,8 @@ struct ChildDummy: Identifiable {
 struct MainView: View {
     @EnvironmentObject private var coordinator: AppCoordinator
     
+    @State private var isLaunch: Bool = true
+    
     @State private var children: [ChildDummy] = [
         ChildDummy(
             name: "정종문",
@@ -42,64 +44,74 @@ struct MainView: View {
     ]
     
     var body: some View {
-        VStack(alignment: .center, spacing: 20) {
-            
-            HStack(alignment: .top) {
-                // Space Between
-                VStack(alignment: .leading, spacing: 6) {
-                    Text("지혜 어린이집")
-                        .head01_24Bold()
-                        .foregroundColor(.primeDark)
+        if isLaunch {
+            LaunchView()
+                .onAppear {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { withAnimation(.linear) {
+                        self.isLaunch = false
+                    }
+                    }
+                }
+        } else {
+            VStack(alignment: .center, spacing: 20) {
+                
+                HStack(alignment: .top) {
+                    // Space Between
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("지혜 어린이집")
+                            .head01_24Bold()
+                            .foregroundColor(.primeDark)
+                        
+                        Text("현주반 (만 3세) 총 4명")
+                            .body02_16Regular()
+                            .foregroundColor(.black70)
+                    }
                     
-                    Text("현주반 (만 3세) 총 4명")
-                        .body02_16Regular()
-                        .foregroundColor(.black70)
+                    Spacer()
+                    
+                    HStack {
+                        Button("파일 업로드 뷰") {
+                            coordinator.push(.fileUpload)
+                        }
+                        
+                        Button {
+                            coordinator.push(.report)
+                        } label: {
+                            Image(.settings)
+                        }
+                    }
+                    
+                }
+                .padding(.horizontal, 0)
+                .padding(.vertical, 32)
+                
+                Text(todayString)
+                    .body03_14Light()
+                
+                VStack {
+                    ForEach($children) { $child in
+                        ChildCardView(child: $child)
+                    }
                 }
                 
                 Spacer()
                 
-                HStack {
-                    Button("파일 업로드 뷰") {
-                        coordinator.push(.fileUpload)
+                Button {
+                    coordinator.push(.reportEdit)
+                } label: {
+                    HStack(alignment: .center, spacing: 10) {
+                        Image(.union)
+                            .foregroundColor(.white)
                     }
-                    
-                    Button {
-                        coordinator.push(.report)
-                    } label: {
-                        Image(.settings)
-                    }
-                }
-                
-            }
-            .padding(.horizontal, 0)
-            .padding(.vertical, 32)
-            
-            Text(todayString)
-                .body03_14Light()
-            
-            VStack {
-                ForEach($children) { $child in
-                    ChildCardView(child: $child)
+                    .padding(15)
+                    .background(.prime100)
+                    .cornerRadius(9999)
                 }
             }
-            
-            Spacer()
-            
-            Button {
-                coordinator.push(.reportEdit)
-            } label: {
-                HStack(alignment: .center, spacing: 10) {
-                    Image(.union)
-                        .foregroundColor(.white)
-                }
-                .padding(15)
-                .background(.prime100)
-                .cornerRadius(9999)
-            }
+            .padding(.horizontal, 20)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(.prime40)
         }
-        .padding(.horizontal, 20)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(.prime40)
     }
     
     private var todayString: String {
