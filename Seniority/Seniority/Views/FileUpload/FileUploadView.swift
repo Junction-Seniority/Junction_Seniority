@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import PhotosUI
 
 /// 파일 업로드 뷰
 struct FileUploadView: View {
@@ -91,13 +92,16 @@ struct FileUploadView: View {
 struct RegisterFileCardView: View {
     
     @State var isUploaded: Bool = false
+    @State private var showDocPicker = false
+    
+    @State private var pickedFiles: [URL] = []
     
     var title: String
     var description: String
     
     var body: some View {
         Button {
-            isUploaded.toggle()
+            showDocPicker = true
         } label: {
             VStack(alignment: .center, spacing: 10) {
                 Image(isUploaded ? .check : .upload)
@@ -123,6 +127,17 @@ struct RegisterFileCardView: View {
                     .inset(by: 1)
                     .stroke(.prime90, style: StrokeStyle(lineWidth: 2, dash: [8, 8]))
             )
+        }
+        .sheet(isPresented: $showDocPicker) {
+            DocumentPicker(
+                allowedContentTypes: [.pdf, .image, .plainText, .data],
+                allowsMultipleSelection: true
+            ) { urls in
+                pickedFiles = urls
+                if !urls.isEmpty {
+                    isUploaded.toggle()
+                }
+            }
         }
     }
 }
