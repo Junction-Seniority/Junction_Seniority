@@ -8,5 +8,7 @@
 		<string>Pretendard-Light.otf</string>
 		<string>Pretendard-Regular.otf</string>
 	</array>
+	<key>UILaunchScreen</key>
+	<dict/>
 </dict>
 </plist>

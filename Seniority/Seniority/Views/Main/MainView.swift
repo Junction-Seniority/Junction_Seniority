@@ -13,85 +13,98 @@ struct MainView: View {
     @State private var children = DummyChild.children
     
     @State private var showAlert: Bool = false
+    @State private var isLaunch: Bool = true
     
     var body: some View {
-
-        ZStack {
+        if isLaunch {
+            LaunchView()
+                .onAppear {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { withAnimation(.linear) {
+                        self.isLaunch = false
+                    }
+                    }
+                }
+        } else {
             VStack(alignment: .center, spacing: 20) {
-
-                HStack(alignment: .top) {
-                    VStack(alignment: .leading, spacing: 6) {
-                        Text("지혜 어린이집")
-                            .head01_24Bold()
-                            .foregroundColor(.primeDark)
-                        Text("현주반 (만 3세) 총 4명")
-                            .body02_16Regular()
-                            .foregroundColor(.black70)
-                    }
-
-                    Spacer()
-
-                    HStack {
-                        Button("파일 업로드 뷰") {
-                            coordinator.push(.fileUpload)
+                
+                ZStack {
+                    VStack(alignment: .center, spacing: 20) {
+                        
+                        HStack(alignment: .top) {
+                            VStack(alignment: .leading, spacing: 6) {
+                                Text("지혜 어린이집")
+                                    .head01_24Bold()
+                                    .foregroundColor(.primeDark)
+                                Text("현주반 (만 3세) 총 4명")
+                                    .body02_16Regular()
+                                    .foregroundColor(.black70)
+                            }
+                            
+                            Spacer()
+                            
+                            HStack {
+                                Button("파일 업로드 뷰") {
+                                    coordinator.push(.fileUpload)
+                                }
+                                Button {
+                                    coordinator.push(.report)
+                                } label: {
+                                    Image(.settings)
+                                }
+                            }
                         }
+                        
+                        .padding(.vertical, 32)
+                        
+                        Text(todayString)
+                            .body03_14Light()
+                        
+                        VStack {
+                            ForEach($children) { $child in
+                                ChildCardView(child: $child)
+                            }
+                        }
+                        
+                        Spacer()
+                        
                         Button {
-                            coordinator.push(.report)
+                            coordinator.push(.reportEdit)
                         } label: {
-                            Image(.settings)
+                            HStack(spacing: 10) {
+                                Image(.union).foregroundColor(.white)
+                            }
+                            .padding(15)
+                            .background(.prime100)
+                            .cornerRadius(9999)
                         }
                     }
-                }
-
-                .padding(.vertical, 32)
-
-                Text(todayString)
-                    .body03_14Light()
-
-                VStack {
-                    ForEach($children) { $child in
-                        ChildCardView(child: $child)
+                    .padding(.horizontal, 20)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(.prime40)
+                    .ignoresSafeArea(edges: .bottom)
+                    
+                    // ===== 오버레이 모달 =====
+                    if showAlert {
+                        // 딤 영역
+                        Color.black.opacity(0.35)
+                            .ignoresSafeArea()
+                            .transition(.opacity)
+                            .onTapGesture {                         // 배경 탭으로 닫기
+                                withAnimation(.easeOut(duration: 0.2)) { showAlert = false }
+                            }
+                            .zIndex(1)
+                        
+                        // 모달 카드
+                        AlertModal(onConfirm: {
+                            showAlert = false
+                        })
+                        .transition(.move(edge: .bottom).combined(with: .opacity))
+                        .zIndex(2)
                     }
                 }
-
-                Spacer()
-
-                Button {
-                     coordinator.push(.reportEdit)
-                } label: {
-                    HStack(spacing: 10) {
-                        Image(.union).foregroundColor(.white)
-                    }
-                    .padding(15)
-                    .background(.prime100)
-                    .cornerRadius(9999)
-                }
-            }
-            .padding(.horizontal, 20)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(.prime40)
-            .ignoresSafeArea(edges: .bottom)
-
-            // ===== 오버레이 모달 =====
-            if showAlert {
-                // 딤 영역
-                Color.black.opacity(0.35)
-                    .ignoresSafeArea()
-                    .transition(.opacity)
-                    .onTapGesture {                         // 배경 탭으로 닫기
-                        withAnimation(.easeOut(duration: 0.2)) { showAlert = false }
-                    }
-                    .zIndex(1)
-
-                // 모달 카드
-                AlertModal(onConfirm: {
-                    showAlert = false
-                })
-                    .transition(.move(edge: .bottom).combined(with: .opacity))
-                    .zIndex(2)
+                .animation(.easeInOut(duration: 0.22), value: showAlert) // 상태 애니메이션
             }
         }
-        .animation(.easeInOut(duration: 0.22), value: showAlert) // 상태 애니메이션
     }
     
     private var todayString: String {
