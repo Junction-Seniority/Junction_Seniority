@@ -7,7 +7,6 @@
 
 import Foundation
 
-// MARK: - Request DTOs
 struct ChatRequestDTO: Codable {
     let model: String
     let messages: [MessageDTO]
@@ -20,7 +19,6 @@ struct MessageDTO: Codable {
     let content: String
 }
 
-// MARK: - Response DTOs
 struct ChatResponseDTO: Codable {
     let id: String
     let object: String

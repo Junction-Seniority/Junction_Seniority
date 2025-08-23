@@ -40,7 +40,6 @@ class ChatService: ChatServiceProtocol {
     }
 }
 
-// MARK: - Chat Mapper
 protocol ChatMapperProtocol {
     func toRequestDTO(message: String, model: ModelType) -> ChatRequestDTO
     func toDomainModel(from dto: ChatResponseDTO) -> ChatResponse

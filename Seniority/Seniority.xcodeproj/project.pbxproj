@@ -10,9 +10,33 @@
 		7D6CD5F82E594CB200071D29 /* Seniority.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Seniority.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		7D6CD65B2E59B81600071D29 /* Exceptions for "Seniority" folder in "Seniority" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Prompt/StyleGuide.swift,
+			);
+			target = 7D6CD5F72E594CB200071D29 /* Seniority */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+		7D6CD65C2E59B81600071D29 /* Exceptions for "Seniority" folder in "Copy Bundle Resources" phase from "Seniority" target */ = {
+			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
+			buildPhase = 7D6CD5F62E594CB200071D29 /* Resources */;
+			membershipExceptions = (
+				Prompt/StyleGuide.swift,
+			);
+		};
+/* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		7D6CD5FA2E594CB200071D29 /* Seniority */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				7D6CD65B2E59B81600071D29 /* Exceptions for "Seniority" folder in "Seniority" target */,
+				7D6CD65C2E59B81600071D29 /* Exceptions for "Seniority" folder in "Copy Bundle Resources" phase from "Seniority" target */,
+			);
 			path = Seniority;
 			sourceTree = "<group>";
 		};

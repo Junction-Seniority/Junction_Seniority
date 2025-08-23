@@ -7,7 +7,6 @@
 
 import Foundation
 
-// MARK: - API Errors
 enum APIError: Error, LocalizedError {
     case invalidURL
     case noData
@@ -19,7 +18,7 @@ enum APIError: Error, LocalizedError {
     case noContent
     case noChoices
     case serverError(String)
-    
+
     var errorDescription: String? {
         switch self {
         case .invalidURL:
@@ -46,12 +45,11 @@ enum APIError: Error, LocalizedError {
     }
 }
 
-// MARK: - UI Errors
 enum UIError: Error, LocalizedError {
     case invalidInput
     case emptyMessage
     case loadingState
-    
+
     var errorDescription: String? {
         switch self {
         case .invalidInput:
@@ -64,12 +62,11 @@ enum UIError: Error, LocalizedError {
     }
 }
 
-// MARK: - Validation Errors
 enum ValidationError: Error, LocalizedError {
     case messageTooShort
     case messageTooLong
     case invalidCharacters
-    
+
     var errorDescription: String? {
         switch self {
         case .messageTooShort:
