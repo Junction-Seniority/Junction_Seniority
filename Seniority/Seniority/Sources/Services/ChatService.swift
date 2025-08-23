@@ -34,7 +34,7 @@ class ChatService: ChatServiceProtocol {
             throw ValidationError.messageTooShort
         }
         
-        guard message.count <= 1000 else {
+        guard message.count <= 10000 else {
             throw ValidationError.messageTooLong
         }
     }
