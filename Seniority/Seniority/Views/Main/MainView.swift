@@ -120,18 +120,18 @@ struct MainView: View {
 }
 
 struct ChildCardView: View {
-//    @AppStorage("jjm_notes") private var jjmNotesJSON: String = "[]" // MARK: - 종문 어린이 특이사항만 AppStorage에 저장
-    @AppStorage("specialNotes") var jjmNotes: [String] = []
+    // AppStorage: [String] 사용 전제 (RawRepresentable 확장 필요)
+        @AppStorage("specialNotes") private var specialNotes: [String] = []
 
-    @Binding var child: ChildDummy
-    
-    @State private var isAddingNote: Bool = false
-    @State private var draftNote: String = ""
-    @FocusState private var noteFieldFocused: Bool
-    
-    // 이름으로 식별 (실서비스에선 id 기반 권장)
-    private var isJJM: Bool { child.name == "정종문" }
-    
+        @Binding var child: ChildDummy
+
+        @State private var isAddingNote: Bool = false
+        @State private var draftNote: String = ""
+        @FocusState private var noteFieldFocused: Bool
+
+        // 이름으로 식별 (실서비스는 id 권장)
+        private var isJJM: Bool { child.name == "정종문" }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             HStack(alignment: .center, spacing: 14) {
@@ -232,26 +232,24 @@ struct ChildCardView: View {
         .cornerRadius(12)
         // 마운트 시: 정종문이면 AppStorage → 메모리 로드
         .onAppear {
-            if isJJM, !jjmNotes.isEmpty {
-                child.notes = jjmNotes
-            }
-        }
-        .onChange(of: child.notes) { _, newValue in
-            if isJJM, newValue != jjmNotes {
-                jjmNotes = newValue
-            }
-        }
-        .onChange(of: jjmNotes) { _, new in
-            if isJJM, new != child.notes {
-                child.notes = new
-            }
-        }
-        .onChange(of: child.name) { _, _ in
-            if isJJM, !jjmNotes.isEmpty {
-                child.notes = jjmNotes
-            }
-            
-        }
+                    if isJJM, !specialNotes.isEmpty {
+                        child.notes = specialNotes
+                    }
+                }
+
+                // ✅ AppStorage가 바뀌면 화면 즉시 반영
+                .onChange(of: specialNotes) { _, new in
+                    if isJJM, new != child.notes {
+                        child.notes = new
+                    }
+                }
+
+                // (선택) 이름 바뀌면 재주입
+                .onChange(of: child.name) { _, _ in
+                    if isJJM, !specialNotes.isEmpty {
+                        child.notes = specialNotes
+                    }
+                }
     }
     
     // MARK: - Actions
@@ -284,19 +282,12 @@ struct ChildCardView: View {
     }
     
     // MARK: - JSON Helpers
-
-    private func encodeNotes(_ notes: [String]) -> String {
-        (try? String(data: JSONEncoder().encode(notes), encoding: .utf8)) ?? "[]"
-    }
-    
-    private func decodeNotes(_ json: String) -> [String] {
-        guard let data = json.data(using: .utf8) else { return [] }
-        return (try? JSONDecoder().decode([String].self, from: data)) ?? []
-    }
     
     private func clearJJMNotes() {
-        jjmNotes = []              // 저장소 비우기
-        if isJJM { child.notes = [] }  // 화면 상태도 함께 초기화
+        if isJJM {
+                    specialNotes = []      // 저장소 비우기
+                    child.notes = []   // 화면도 비우기
+                }
     }
 }
 
