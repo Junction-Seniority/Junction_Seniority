@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ChattingView: View {
-    @StateObject var viewModel = ChatViewModel()
+    @ObservedObject var viewModel: ChatViewModel
     
     @AppStorage("savedReportData") private var contents: Data = Data()
     
@@ -89,6 +89,3 @@ struct ChattingView: View {
     }
 }
 
-#Preview {
-    ChattingView()
-}
