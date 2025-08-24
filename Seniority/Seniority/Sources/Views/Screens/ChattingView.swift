@@ -10,7 +10,12 @@ import SwiftUI
 struct ChattingView: View {
     @StateObject var viewModel = ChatViewModel()
     
-    var contents: String = ""
+    @AppStorage("savedReportData") private var contents: Data = Data()
+    
+    private var report: SavedReport? {
+        guard !contents.isEmpty else { return nil }
+        return try? JSONDecoder().decode(SavedReport.self, from: contents)
+    }
     
     var body: some View {
         VStack(spacing: 16) {
@@ -30,17 +35,21 @@ struct ChattingView: View {
                     }
                     
                     VStack(alignment: .leading, spacing: 2) {
-                        Text(contents.isEmpty ?  DummyContent.content : contents)
-                            .body02_16Regular()
-                            .padding(.all, 12)
-                            .background {
-                                RoundedRectangle(cornerRadius: 12)
-                                    .fill(Color.white)
-                            }
-                        
-                        Text(Date().timeKorean)
-                            .foregroundStyle(Color.black70)
-                            .body03_14Light()
+                        if let report = report {
+                            Text(report.responseText)
+                                .body02_16Regular()
+                                .padding(.all, 12)
+                                .background {
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .fill(Color.white)
+                                }
+                            
+                            Text(Date().timeKorean)
+                                .foregroundStyle(Color.black70)
+                                .body03_14Light()
+                        } else {
+                            EmptyView()
+                        }
                     }
                 }
                 .scrollIndicators(.hidden)
