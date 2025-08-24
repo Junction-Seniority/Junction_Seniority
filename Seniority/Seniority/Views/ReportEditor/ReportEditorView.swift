@@ -294,7 +294,9 @@ struct ReportEditorView: View {
                         Button(action: {
                             Task {
                                 await generateReport()
-                            }
+                                coordinator.showReportCompletionModal = true
+                                coordinator.pop()
+                              }
                         }) {
                             HStack {
                                 Spacer()

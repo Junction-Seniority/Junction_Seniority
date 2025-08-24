@@ -26,10 +26,8 @@ struct MainView: View {
                 }
         } else {
             VStack(alignment: .center, spacing: 20) {
-                
                 ZStack {
                     VStack(alignment: .center, spacing: 20) {
-                        
                         HStack(alignment: .top) {
                             VStack(alignment: .leading, spacing: 6) {
                                 Text("지혜 어린이집")
@@ -89,7 +87,7 @@ struct MainView: View {
                         Color.black.opacity(0.35)
                             .ignoresSafeArea()
                             .transition(.opacity)
-                            .onTapGesture {                         // 배경 탭으로 닫기
+                            .onTapGesture { // 배경 탭으로 닫기
                                 withAnimation(.easeOut(duration: 0.2)) { showAlert = false }
                             }
                             .zIndex(1)
@@ -101,8 +99,15 @@ struct MainView: View {
                         .transition(.move(edge: .bottom).combined(with: .opacity))
                         .zIndex(2)
                     }
+                    
+                    if coordinator.showReportCompletionModal {
+                        ReportCreateCompleteModal(onConfirm: {
+                            coordinator.showReportCompletionModal = false
+                        })
+                        .zIndex(3)
+                    }
                 }
-                .animation(.easeInOut(duration: 0.22), value: showAlert) // 상태 애니메이션
+                .animation(.easeInOut(duration: 0.22), value: showAlert || coordinator.showReportCompletionModal) // 상태 애니메이션
             }
         }
     }
@@ -314,7 +319,7 @@ struct InfoTagView: View {
 }
 
 struct AlertModal: View {
-    var onConfirm: (() -> Void)
+    var onConfirm: () -> Void
     
     var body: some View {
         VStack(alignment: .center, spacing: 16) {
@@ -345,7 +350,6 @@ struct AlertModal: View {
             .padding(.vertical, 8)
             .frame(maxWidth: .infinity, minHeight: 40, maxHeight: 40, alignment: .center)
             .background(Color(red: 0.38, green: 0.6, blue: 0.85))
-
             .cornerRadius(12)
         }
         .padding(24)

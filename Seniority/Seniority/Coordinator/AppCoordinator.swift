@@ -11,6 +11,7 @@ import SwiftUI
 @MainActor
 class AppCoordinator: ObservableObject {
     @Published var path = NavigationPath()
+    @Published var showReportCompletionModal = false
     
     func push(_ route: AppRoute) {
         path.append(route)
