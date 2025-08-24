@@ -9,6 +9,7 @@ import SwiftUI
 
 struct RootView: View {
     @StateObject private var coordinator = AppCoordinator()
+    @StateObject private var chatVM = ChatViewModel() 
     
     var body: some View {
         NavigationStack(path: $coordinator.path) {
@@ -18,7 +19,7 @@ struct RootView: View {
                     case .splash: SplashView()
                     case .main: MainView()
                     case .fileUpload: FileUploadView()
-                    case .report: ChattingView()
+                    case .report: ChattingView(viewModel: chatVM)
                     case .reportEdit: ReportEditorView()
                     }
                 }

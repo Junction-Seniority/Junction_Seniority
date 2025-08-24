@@ -42,26 +42,32 @@ struct MainView: View {
                             
                             Spacer()
                             
-                            HStack {
-                                Button("파일 업로드 뷰") {
+                            HStack(alignment: .bottom) {
+                                Button {
                                     coordinator.push(.fileUpload)
+                                } label: {
+                                    Image(systemName: "tray.and.arrow.up")
+                                        .font(.system(size: 22, weight: .medium))
                                 }
                                 Button {
                                     coordinator.push(.report)
                                 } label: {
-                                    Image(.settings)
+                                    Image(systemName: "ellipsis.bubble")
+                                        .font(.system(size: 22, weight: .medium))
                                 }
                             }
+                            .foregroundStyle(Color.primeDark)
                         }
-                        
-                        .padding(.vertical, 32)
+                        .padding(.vertical, 10)
                         
                         Text(todayString)
                             .body03_14Light()
                         
-                        VStack {
-                            ForEach($children) { $child in
-                                ChildCardView(child: $child)
+                        ScrollView {
+                            VStack {
+                                ForEach($children) { $child in
+                                    ChildCardView(child: $child)
+                                }
                             }
                         }
                         
@@ -81,7 +87,6 @@ struct MainView: View {
                     .padding(.horizontal, 20)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .background(.prime40)
-                    .ignoresSafeArea(edges: .bottom)
                     
                     // ===== 오버레이 모달 =====
                     if showAlert {
@@ -116,17 +121,18 @@ struct MainView: View {
 }
 
 struct ChildCardView: View {
-    @AppStorage("jjm_notes") private var jjmNotesJSON: String = "[]" // MARK: - 종문 어린이 특이사항만 AppStorage에 저장
+    // AppStorage: [String] 사용 전제 (RawRepresentable 확장 필요)
+        @AppStorage("specialNotes") private var specialNotes: [String] = []
 
-    @Binding var child: ChildDummy
-    
-    @State private var isAddingNote: Bool = false
-    @State private var draftNote: String = ""
-    @FocusState private var noteFieldFocused: Bool
-    
-    // 이름으로 식별 (실서비스에선 id 기반 권장)
-    private var isJJM: Bool { child.name == "정종문" }
-    
+        @Binding var child: ChildDummy
+
+        @State private var isAddingNote: Bool = false
+        @State private var draftNote: String = ""
+        @FocusState private var noteFieldFocused: Bool
+
+        // 이름으로 식별 (실서비스는 id 권장)
+        private var isJJM: Bool { child.name == "정종문" }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             HStack(alignment: .center, spacing: 14) {
@@ -219,7 +225,7 @@ struct ChildCardView: View {
 
             // MARK: - 디버깅용
 
-            Button("저장 초기화") { clearJJMNotes() }
+//            Button("저장 초기화") { clearJJMNotes() }
         }
         .padding(10)
         .frame(maxWidth: .infinity, alignment: .topLeading)
@@ -227,23 +233,23 @@ struct ChildCardView: View {
         .cornerRadius(12)
         // 마운트 시: 정종문이면 AppStorage → 메모리 로드
         .onAppear {
-            if isJJM {
-                let stored = decodeNotes(jjmNotesJSON)
-                if !stored.isEmpty { child.notes = stored }
-            }
-        }
-        .onChange(of: child.notes) { _, newValue in
-            if isJJM { jjmNotesJSON = encodeNotes(newValue) }
-        }
-        .onChange(of: jjmNotesJSON) { _, newJSON in
-            if isJJM { child.notes = decodeNotes(newJSON) }
-        }
-        .onChange(of: child.name) { _, _ in
-            if isJJM {
-                let stored = decodeNotes(jjmNotesJSON)
-                if !stored.isEmpty { child.notes = stored }
-            }
-        }
+                    if isJJM, !specialNotes.isEmpty {
+                        child.notes = specialNotes
+                    }
+                }
+
+                .onChange(of: specialNotes) { _, new in
+                    if isJJM, new != child.notes {
+                        child.notes = new
+                    }
+                }
+
+                // (선택) 이름 바뀌면 재주입
+                .onChange(of: child.name) { _, _ in
+                    if isJJM, !specialNotes.isEmpty {
+                        child.notes = specialNotes
+                    }
+                }
     }
     
     // MARK: - Actions
@@ -252,6 +258,7 @@ struct ChildCardView: View {
         let trimmed = draftNote.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { cancelNote(); return }
         child.notes.append(trimmed)
+        specialNotes.append(trimmed)
         draftNote = ""
         isAddingNote = false
         noteFieldFocused = false
@@ -276,19 +283,12 @@ struct ChildCardView: View {
     }
     
     // MARK: - JSON Helpers
-
-    private func encodeNotes(_ notes: [String]) -> String {
-        (try? String(data: JSONEncoder().encode(notes), encoding: .utf8)) ?? "[]"
-    }
-    
-    private func decodeNotes(_ json: String) -> [String] {
-        guard let data = json.data(using: .utf8) else { return [] }
-        return (try? JSONDecoder().decode([String].self, from: data)) ?? []
-    }
     
     private func clearJJMNotes() {
-        jjmNotesJSON = "[]"
-        if isJJM { child.notes = [] } // 화면도 함께 초기화
+        if isJJM {
+                    specialNotes = []      // 저장소 비우기
+                    child.notes = []   // 화면도 비우기
+                }
     }
 }
 
