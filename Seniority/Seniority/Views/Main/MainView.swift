@@ -42,16 +42,21 @@ struct MainView: View {
                             
                             Spacer()
                             
-                            HStack {
-                                Button("파일 업로드 뷰") {
+                            HStack(alignment: .bottom) {
+                                Button {
                                     coordinator.push(.fileUpload)
+                                } label: {
+                                    Image(systemName: "tray.and.arrow.up")
+                                        .font(.system(size: 22, weight: .medium))
                                 }
                                 Button {
                                     coordinator.push(.report)
                                 } label: {
-                                    Image(.settings)
+                                    Image(systemName: "ellipsis.bubble")
+                                        .font(.system(size: 22, weight: .medium))
                                 }
                             }
+                            .foregroundStyle(Color.primeDark)
                         }
                         
                         .padding(.vertical, 32)
@@ -81,7 +86,6 @@ struct MainView: View {
                     .padding(.horizontal, 20)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .background(.prime40)
-                    .ignoresSafeArea(edges: .bottom)
                     
                     // ===== 오버레이 모달 =====
                     if showAlert {
@@ -116,7 +120,8 @@ struct MainView: View {
 }
 
 struct ChildCardView: View {
-    @AppStorage("jjm_notes") private var jjmNotesJSON: String = "[]" // MARK: - 종문 어린이 특이사항만 AppStorage에 저장
+//    @AppStorage("jjm_notes") private var jjmNotesJSON: String = "[]" // MARK: - 종문 어린이 특이사항만 AppStorage에 저장
+    @AppStorage("specialNotes") var jjmNotes: [String] = []
 
     @Binding var child: ChildDummy
     
@@ -227,22 +232,25 @@ struct ChildCardView: View {
         .cornerRadius(12)
         // 마운트 시: 정종문이면 AppStorage → 메모리 로드
         .onAppear {
-            if isJJM {
-                let stored = decodeNotes(jjmNotesJSON)
-                if !stored.isEmpty { child.notes = stored }
+            if isJJM, !jjmNotes.isEmpty {
+                child.notes = jjmNotes
             }
         }
         .onChange(of: child.notes) { _, newValue in
-            if isJJM { jjmNotesJSON = encodeNotes(newValue) }
+            if isJJM, newValue != jjmNotes {
+                jjmNotes = newValue
+            }
         }
-        .onChange(of: jjmNotesJSON) { _, newJSON in
-            if isJJM { child.notes = decodeNotes(newJSON) }
+        .onChange(of: jjmNotes) { _, new in
+            if isJJM, new != child.notes {
+                child.notes = new
+            }
         }
         .onChange(of: child.name) { _, _ in
-            if isJJM {
-                let stored = decodeNotes(jjmNotesJSON)
-                if !stored.isEmpty { child.notes = stored }
+            if isJJM, !jjmNotes.isEmpty {
+                child.notes = jjmNotes
             }
+            
         }
     }
     
@@ -287,8 +295,8 @@ struct ChildCardView: View {
     }
     
     private func clearJJMNotes() {
-        jjmNotesJSON = "[]"
-        if isJJM { child.notes = [] } // 화면도 함께 초기화
+        jjmNotes = []              // 저장소 비우기
+        if isJJM { child.notes = [] }  // 화면 상태도 함께 초기화
     }
 }
 
