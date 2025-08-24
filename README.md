@@ -1,3 +1,7 @@
+<img width="1444" height="815" alt="image" src="https://github.com/user-attachments/assets/86837676-3acd-4372-bb0e-1716a2c19f6a" />
+
+
+
 ## 1. 알잘딸깍쌤의 주요 기능
 선생님들의 시간을 아끼고 아이들에게 집중할 수 있도록 돕는 서비스
 
