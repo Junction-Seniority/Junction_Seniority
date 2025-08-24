@@ -44,7 +44,7 @@ struct ReportEditorView: View {
                                     .font(.system(size: 16))
                                     .foregroundColor(.gray)
                             }
-                                
+                                    
                             HStack {
                                 Text("전송시간")
                                     .font(.system(size: 16, weight: .medium))
@@ -59,12 +59,12 @@ struct ReportEditorView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .background(.white)
                         .cornerRadius(12)
-                            
+                                
                         // 날씨 및 인사말 Category
                         VStack(alignment: .leading, spacing: 8) {
                             Text("날씨 및 인사말")
                                 .body01_16Bold()
-                                
+                                    
                             HStack(spacing: 8) {
                                 ForEach(GreetingStyle.allCases, id: \.self) { style in
                                     Button(action: {
@@ -99,12 +99,12 @@ struct ReportEditorView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .background(.white)
                         .cornerRadius(12)
-                            
+                                
                         // 오늘 활동 Category
                         VStack(alignment: .leading, spacing: 8) {
                             Text("오늘 활동")
                                 .body01_16Bold()
-                                
+                                    
                             ForEach(report.activities, id: \.self) { activity in
                                 Text(activity.title)
                                     .body02_16Regular()
@@ -118,12 +118,12 @@ struct ReportEditorView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .background(.white)
                         .cornerRadius(12)
-                            
+                                
                         // 식사 내역 Category
                         VStack(alignment: .leading, spacing: 8) {
                             Text("식사 내역")
                                 .body01_16Bold()
-                                
+                                    
                             VStack(alignment: .leading, spacing: 4) {
                                 Text("점심")
                                     .body02_16Regular()
@@ -134,7 +134,7 @@ struct ReportEditorView: View {
                                     }
                                 }
                             }
-                                
+                                    
                             VStack(alignment: .leading, spacing: 4) {
                                 Text("간식")
                                     .body02_16Regular()
@@ -151,24 +151,24 @@ struct ReportEditorView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .background(.white)
                         .cornerRadius(12)
-                            
+                                
                         // 행사 및 준비물 Category
                         VStack(alignment: .leading, spacing: 8) {
                             Text("행사 및 준비물")
                                 .body01_16Bold()
-                                
+                                    
                             Text(report.event?.date ?? "8.25(월)")
                                 .body02_16Regular()
-                                
+                                    
                             Text(report.event?.title ?? "")
                                 .body03_14Light()
-                                
+                                    
                             if let event = report.event, let supplies = event.supplies, !supplies.isEmpty {
                                 // 이미 준비물이 있으면 바로 텍스트 필드를 표시
                                 VStack(alignment: .leading, spacing: 8) {
                                     Text("준비물")
                                         .body02_16Regular()
-                                        
+                                            
                                     TextField("필요한 준비물이 있다면 작성해주세요", text: Binding<String>(
                                         get: { report.event?.supplies ?? "" },
                                         set: { newValue in
@@ -202,7 +202,7 @@ struct ReportEditorView: View {
                                     }
                                     .opacity(isAddingSupplies ? 0 : 1)
                                 }
-                                    
+                                        
                                 if isAddingSupplies {
                                     TextField("필요한 준비물이 있다면 작성해주세요", text: Binding<String>(
                                         get: { report.event?.supplies ?? "" },
@@ -223,12 +223,12 @@ struct ReportEditorView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .background(.white)
                         .cornerRadius(12)
-                            
+                                
                         // 추가 전달 사항 Category
                         VStack(alignment: .leading, spacing: 8) {
                             Text("추가 전달 사항")
                                 .body01_16Bold()
-                                
+                                    
                             TextField("추가로 학부모님께 공통적으로 전달할 내용이 있다면 간략히 적어주세요", text: $additionalNotes, axis: .vertical)
                                 .font(.system(size: 14))
                                 .cornerRadius(8)
@@ -239,12 +239,12 @@ struct ReportEditorView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .background(.white)
                         .cornerRadius(12)
-                            
+                                
                         // 마무리 인사말 Category
                         VStack(alignment: .leading, spacing: 8) {
                             Text("마무리 인삿말")
                                 .body01_16Bold()
-                                
+                                    
                             HStack(spacing: 8) {
                                 ForEach(ClosingGreetingStyle.allCases, id: \.self) { style in
                                     Button(action: {
@@ -279,7 +279,7 @@ struct ReportEditorView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .background(.white)
                         .cornerRadius(12)
-                            
+                                
                         HStack(spacing: 10) {
                             Image(.point)
                             Text("알림장 끝에 각 원아별 특이사항이 기록될 예정이에요")
@@ -290,7 +290,7 @@ struct ReportEditorView: View {
                         }
                         .padding(.top, 32)
                         .padding(.bottom, 16)
-                            
+                                
                         Button(action: {
                             Task {
                                 await generateReport()
@@ -322,7 +322,7 @@ struct ReportEditorView: View {
                             Text(errorMessage)
                         }
                         .padding(.bottom, 16)
-                            
+                                
                         // 저장 성공 메시지
                         if showSaveSuccess {
                             HStack {
@@ -343,9 +343,12 @@ struct ReportEditorView: View {
                 }
             }
         }
+        .navigationBarHidden(true)
         .background(Color.prime40)
     }
     
+    // MARK: - AI 알림장 생성 기능
+
     @MainActor
     private func generateReport() async {
         isGenerating = true
@@ -392,11 +395,14 @@ struct ReportEditorView: View {
 
         ## ⚠️ **매우 중요한 원칙 (반드시 지켜주세요)**
 
-        1.  ****절대 금지**: 제공된 '[오늘의 정보]'에 없는 내용을 상상하거나 꾸며내지 마세요. (No Lying, No Exaggeration, No Fabrication)
-        2.  **사실 기반**: 아이의 말과 행동은 '[오늘의 정보]'의 '특이사항'에 명시된 경우에만 인용하세요.
-        3.  **간결함**: 정보가 부족하다면 억지로 내용을 늘리지 마세요. 짧고 담백하게 작성하는 것이 좋습니다.
-        4.  **객관적 서술**: 활동 내용을 서술할 때, 추상적인 표현(예: '음악 활동')을 구체적인 행동인 것처럼 부풀리지 마세요. '음악에 맞춰 율동하는 시간을 가졌습니다' 와 같이 활동 자체에 대해서만 간결히 전달하세요.
-        5.  **음식 / 간식 언급**: 식사 / 간식 메뉴는 특별히 언급되거나, 아이의 정보에 연관되어있지않는 한 굳이 언급하지마세요. 아이의 식사량이나 태도에 대한 언급은 '특이사항'에 관련된 내용이 있을 때만 추가하세요.
+
+        1. **절대 금지**: 제공된 '[오늘의 정보]'에 없는 내용을 상상하거나 꾸며내지 마세요. 사실만 작성하세요.
+        2. **사실 기반**: 아이의 말과 행동은 '[오늘의 정보]'의 '특이사항'에 명시된 경우에만 인용하세요.
+        3. **간결함**: 정보가 부족하다면 억지로 내용을 늘리지 마세요. 짧고 담백하게 작성하세요.
+        4. **객관적 서술**: 활동 내용을 구체적인 행동처럼 부풀리지 마세요. '음악 활동'이라면 '음악에 맞춰 율동하는 시간을 가졌습니다'와 같이 활동 자체만 간결히 전달하세요.
+        5. **식사 언급 제한**: 식사/간식 메뉴는 특이사항에 연관된 경우에만 언급하세요. 아이의 식사량이나 태도는 특이사항에 명시된 경우에만 추가하세요.
+        6. **순수 알림장만 작성**: 알림장 본문만 작성하세요. 추가 설명, 코멘트, 부가 텍스트를 절대 포함하지 마세요.
+        7. **일반 텍스트 형식**: 마크다운 기호(#, *, -, ``` 등)를 사용하지 마세요. 실제 편지처럼 순수한 텍스트로만 작성하세요.
 
         ---
 
@@ -495,7 +501,6 @@ struct ReportEditorView: View {
         let savedReport = SavedReport(
             responseText: content,
             recipient: "해바라기반 전체",
-            sendTimeString: "2025년 8월 22일 오후 5시"
         )
         
         // AppStorage에 저장
