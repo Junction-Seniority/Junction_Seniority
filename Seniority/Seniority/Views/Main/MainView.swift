@@ -58,15 +58,16 @@ struct MainView: View {
                             }
                             .foregroundStyle(Color.primeDark)
                         }
-                        
-                        .padding(.vertical, 32)
+                        .padding(.vertical, 10)
                         
                         Text(todayString)
                             .body03_14Light()
                         
-                        VStack {
-                            ForEach($children) { $child in
-                                ChildCardView(child: $child)
+                        ScrollView {
+                            VStack {
+                                ForEach($children) { $child in
+                                    ChildCardView(child: $child)
+                                }
                             }
                         }
                         
@@ -224,7 +225,7 @@ struct ChildCardView: View {
 
             // MARK: - 디버깅용
 
-            Button("저장 초기화") { clearJJMNotes() }
+//            Button("저장 초기화") { clearJJMNotes() }
         }
         .padding(10)
         .frame(maxWidth: .infinity, alignment: .topLeading)
@@ -237,7 +238,6 @@ struct ChildCardView: View {
                     }
                 }
 
-                // ✅ AppStorage가 바뀌면 화면 즉시 반영
                 .onChange(of: specialNotes) { _, new in
                     if isJJM, new != child.notes {
                         child.notes = new
@@ -258,6 +258,7 @@ struct ChildCardView: View {
         let trimmed = draftNote.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { cancelNote(); return }
         child.notes.append(trimmed)
+        specialNotes.append(trimmed)
         draftNote = ""
         isAddingNote = false
         noteFieldFocused = false

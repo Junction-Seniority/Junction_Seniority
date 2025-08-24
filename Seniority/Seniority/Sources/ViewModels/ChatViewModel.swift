@@ -16,6 +16,8 @@ class ChatViewModel: ObservableObject {
     @Published var errorMessage = ""
     @Published var selectedModel: ModelType = .solarPro2
     
+    @AppStorage("specialNotes") var specialNotes: [String] = []
+    
     private let chatService: ChatServiceProtocol
     
     init(chatService: ChatServiceProtocol = ChatService()) {
@@ -113,8 +115,7 @@ class ChatViewModel: ObservableObject {
                 do {
                     let decoded = try JSONDecoder().decode(SpecialNotesResponse.self, from: data)
                     let notes = decoded.special_notes
-                    
-                    @AppStorage("specialNotes") var specialNotes: [String] = notes
+                    specialNotes = notes
                     print(specialNotes)
                 } catch {
                     print("디코딩 실패:", error)
